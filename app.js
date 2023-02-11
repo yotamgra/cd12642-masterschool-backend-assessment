@@ -11,4 +11,6 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Welcome to the Unsplash API!" });
 });
 
+app.use("/api/photos",require("./routes/photoRoutes"))
+
 app.listen(port, () => console.log(`server is ronning on port ${port}`));
