@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const protect = require('../middleware/authMiddleware')
 
 const {
   getRawPhotosURLs,
@@ -7,7 +8,7 @@ const {
   getUsersPhotosByUsername,
 } = require("../controllers/photoController");
 
-router.get("/", getRawPhotosURLs);
+router.get("/", protect, getRawPhotosURLs);
 
 router.get("/:id", getPhotoById);
 

@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/userModel");
 
-//@desc    Create new user
+//@desc    Register new user
 //@route   POST /api/users/
 //@access  Public
 const register = async (req, res) => {
@@ -20,7 +20,7 @@ const register = async (req, res) => {
     const userExists = await User.findOne({ email });
     if (userExists) {
       res.status(400);
-      throw new Error("User alreadt exists");
+      throw new Error("User already exists");
     }
 
     //Hash password
@@ -37,7 +37,7 @@ const register = async (req, res) => {
 
     if (user) {
       res.status(201).json({
-        _id: user._id,
+        _id: user.id,
         username: user.username,
         email: user.email,
         token: generateToken(user.id),
@@ -45,6 +45,36 @@ const register = async (req, res) => {
     } else {
       res.status(400);
       throw new Error("Invalid user data");
+    }
+  } catch (error) {
+    if (res.statusCode < 500) {
+      res.json({
+        message: error.message,
+        stack: process.env.NODE_ENV === "development" ? error.stack : null,
+      });
+    } else
+      res.status(500).json({
+        message: "Server error. Please try again later.",
+      });
+  }
+};
+
+//@desc    Authenticate a user
+//@route   POST /users/login
+//@access  Public
+const login = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    //Check for user email
+    const user = await User.findOne({ email });
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+      res.json({
+        _id: user.id,
+        name: user.name,
+        email: user.email,
+        token: generateToken(user._id),
+      });
     }
   } catch (error) {
     if (res.statusCode < 500) {
@@ -56,6 +86,15 @@ const register = async (req, res) => {
   }
 };
 
+const getMe = async (req, res) => {
+  const user = req.user;
+  if (user) {
+    res.status(200).json(user);
+  } else {
+    res.status(500).json({ message: "Server error. Please try again later." });
+  }
+};
+
 //Generate JWT
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -63,4 +102,4 @@ const generateToken = (id) => {
   });
 };
 
-module.exports = { register };
+module.exports = { register, login, getMe };

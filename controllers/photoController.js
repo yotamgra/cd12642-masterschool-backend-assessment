@@ -8,7 +8,6 @@ const baseUrl = "https://api.unsplash.com/";
 //@access  Public
 const getRawPhotosURLs = async (req, res) => {
   try {
-    console.log("try");
     const response = await axios.get(
       `${baseUrl}photos/?client_id=${process.env.UNSPLASH_ACCESS_KEY}`
     );
@@ -55,10 +54,14 @@ const getUsersPhotosByUsername = async (req, res) => {
 
     res.status(200).send(usersPhotos);
   } catch (error) {
-    const statusCode = error.response.status;
-    const errorMessage = error.message;
+    if (res.statusCode < 500) {
+      res.json({ message: error.message });
+    } else {
+      const statusCode = error.response.status;
+      const errorMessage = error.message;
 
-    res.status(statusCode).json({ message: errorMessage });
+      res.status(statusCode).json({ message: errorMessage });
+    }
   }
 };
 

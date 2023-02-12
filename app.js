@@ -1,5 +1,6 @@
 const express = require("express");
 const connectDB = require("./config/db");
+const errorHandler = require('./middleware/errorMiddleware')
 require("dotenv").config();
 
 const port = process.env.PORT || 3000;
@@ -16,5 +17,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/photos", require("./routes/photoRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
+
+// app.use(errorHandler)
 
 app.listen(port, () => console.log(`server is ronning on port ${port}`));
