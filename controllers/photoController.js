@@ -1,7 +1,7 @@
 //Require axios to make API calls
 const axios = require("axios");
 
-const API = "https://api.unsplash.com/";
+const baseUrl = "https://api.unsplash.com/";
 
 //@desc    Get raw Unsplash photo URLs
 //@route   GET /api/phtos
@@ -10,7 +10,7 @@ const getRawPhotosURLs = async (req, res) => {
   try {
     console.log("try");
     const response = await axios.get(
-      `${API}photos/?client_id=${process.env.UNSPLASH_ACCESS_KEY}`
+      `${baseUrl}photos/?client_id=${process.env.UNSPLASH_ACCESS_KEY}`
     );
     const photos = response.data;
     const rawUnsplashPhotoURLs = photos.map((photo) => photo.urls.raw);
@@ -29,7 +29,7 @@ const getPhotoById = async (req, res) => {
   try {
     const { id } = req.params;
     const response = await axios.get(
-      `${API}photos/${id}?client_id=${process.env.UNSPLASH_ACCESS_KEY}`
+      `${baseUrl}photos/${id}?client_id=${process.env.UNSPLASH_ACCESS_KEY}`
     );
     const photo = response.data;
 
@@ -49,7 +49,7 @@ const getUsersPhotosByUsername = async (req, res) => {
   try {
     const { username } = req.params;
     const response = await axios.get(
-      `${API}users/${username}/photos?client_i=${process.env.UNSPLASH_ACCESS_KEY}`
+      `${baseUrl}users/${username}/photos?client_id=${process.env.UNSPLASH_ACCESS_KEY}`
     );
     const usersPhotos = response.data;
 

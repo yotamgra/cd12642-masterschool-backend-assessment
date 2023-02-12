@@ -15,5 +15,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/photos", require("./routes/photoRoutes"));
+app.use("/api/users", require("./routes/userRoutes"));
 
 app.listen(port, () => console.log(`server is ronning on port ${port}`));
