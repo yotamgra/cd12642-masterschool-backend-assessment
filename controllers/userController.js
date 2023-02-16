@@ -64,6 +64,7 @@ const register = async (req, res) => {
 //@access  Public
 const login = async (req, res) => {
   const { email, password } = req.body;
+  console.log(req.body)
   try {
     //Check for user email
     const user = await User.findOne({ email });
