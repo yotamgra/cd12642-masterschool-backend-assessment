@@ -11,6 +11,7 @@ const favoritePhotoModel = mongoose.Schema({
     required: [true, "Please add the photo's raw url"],
   },
   description: { type: String },
+  explanation: { type: String },
   username: {
     type: String,
     required: [

@@ -6,9 +6,9 @@ const Favorite = require("../models/favoritePhotoModel");
 //@route   POST /api/favorites
 //@access  Private
 const setFavorite = asyncHandler(async (req, res) => {
-  const { url, description, username } = req.body;
+  const { url, description, username, explanation } = req.body;
 
-  if (!url || !description || !username) {
+  if (!url || !description || !username || !explanation) {
     res.status(400);
     throw new Error("Favorite url, description and username are required");
   }
@@ -17,6 +17,7 @@ const setFavorite = asyncHandler(async (req, res) => {
     user: req.user.id,
     url,
     description,
+    explanation,
     username,
   });
   res.status(201).json(favorite);
@@ -46,7 +47,7 @@ const removeFavorite = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  //Make sure the loggedin user matches the post user
+  //Make sure the loggedin user matches the favorite's user
   if (favorite.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error("User not authorized");
@@ -56,7 +57,7 @@ const removeFavorite = asyncHandler(async (req, res) => {
   res.status(200).json({ id: req.params.id });
 });
 
-//@desc    Update description's favorite
+//@desc    Update explanation's favorite
 //@route   PUT /api/favorites/:id
 //@access  Private
 const updateFavorite = asyncHandler(async (req, res) => {
@@ -66,21 +67,25 @@ const updateFavorite = asyncHandler(async (req, res) => {
     throw new Error("Favorite not found");
   }
 
-  
-
   //Check for user
   if (!req.user) {
     res.status(401);
     throw new Error("User not found");
   }
 
-  //Make sure the loggedin user matches the post user
+  //Make sure the loggedin user matches the favorite's user
   if (favorite.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error("User not authorized");
   }
-  const { url, username } = favorite;
-  const updatedTemplet = { ...favorite, description: req.body.description };
+
+  const { explanation } = req.body;
+  if (!explanation) {
+    res.status(400);
+    throw new Error("Explanation not found");
+  }
+  console.log(" req.body.explanation ", explanation);
+  const updatedTemplet = { ...favorite, explanation };
 
   const updatedFavorite = await Favorite.findByIdAndUpdate(
     req.params.id,
