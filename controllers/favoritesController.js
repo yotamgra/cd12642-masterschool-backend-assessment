@@ -84,12 +84,11 @@ const updateFavorite = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Explanation not found");
   }
-  console.log(" req.body.explanation ", explanation);
-  const updatedTemplet = { ...favorite, explanation };
 
   const updatedFavorite = await Favorite.findByIdAndUpdate(
     req.params.id,
-    updatedTemplet
+    { explanation },
+    { new: true }
   );
   res.status(200).json(updatedFavorite);
 });
